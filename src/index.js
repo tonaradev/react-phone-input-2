@@ -777,15 +777,17 @@ class PhoneInput extends React.Component {
         return allCountries.filter(({ dialCode }) =>
           [`${dialCode}`].some(field => field.toLowerCase().includes(sanitizedSearchValue)))
       } else {
-        const iso2countries = allCountries.filter(({ iso2 }) =>
-          [`${iso2}`].some(field => field.toLowerCase().includes(sanitizedSearchValue)))
+        const iso2countries = []; // allCountries.filter(({ iso2 }) => [`${iso2}`].some(field => field.toLowerCase().includes(sanitizedSearchValue)))
         // || '' - is a fix to prevent search of 'undefined' strings
         // Since all the other values shouldn't be undefined, this fix was accepte
         // but the structure do not looks very good
         const searchedCountries = allCountries.filter(({ name, localName, iso2 }) =>
+          [`${name}`, `${localName || ''}`].some(field => field.toLowerCase().startsWith(sanitizedSearchValue)))
+        
+          const searchedCountriesByFuzzySearch = allCountries.filter(({ name, localName, iso2 }) =>
           [`${name}`, `${localName || ''}`].some(field => field.toLowerCase().includes(sanitizedSearchValue)))
-        this.scrollToTop()
-        return [...new Set([].concat(iso2countries, searchedCountries))]
+          this.scrollToTop()
+        return [...new Set([].concat(searchedCountries, searchedCountriesByFuzzySearch))]
       }
     } else {
       return allCountries
