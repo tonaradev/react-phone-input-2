@@ -78,6 +78,7 @@ if (TARGET === 'dev_js' || TARGET === 'dev_css') {
 if (TARGET === 'build:js' || TARGET === 'analyze') {
   module.exports = merge(common, {
     mode: 'production',
+    devtool:"#source-map",
     optimization: {},
     output: {
       library: 'ReactPhoneInput',
