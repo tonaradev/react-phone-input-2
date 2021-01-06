@@ -257,7 +257,21 @@ class PhoneInput extends React.Component {
     if (document.addEventListener && this.props.enableClickOutside) {
       document.addEventListener("mousedown", this.handleClickOutside);
     }
-    this.updateFormattedNumber(this.props.value);
+    const newSelectedCountry = this.findCountryByCode(this.props.country);
+    if (
+      newSelectedCountry &&
+      !startsWith(
+        this.props.value,
+        this.props.prefix + newSelectedCountry.dialCode
+      )
+    ) {
+      this.setState({
+        selectedCountry: newSelectedCountry,
+        formattedNumber: this.props.disableCountryCode
+          ? this.props.value
+          : newSelectedCountry.dialCode + this.props.value,
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -334,8 +348,7 @@ class PhoneInput extends React.Component {
     }
   );
 
-  // Hooks for updated props
-  updateCountry = (country) => {
+  findCountryByCode = (country) => {
     const { onlyCountries } = this.state;
     let newSelectedCountry;
     if (country.indexOf(0) >= "0" && country.indexOf(0) <= "9") {
@@ -344,6 +357,12 @@ class PhoneInput extends React.Component {
     } else {
       newSelectedCountry = onlyCountries.find((o) => o.iso2 == country);
     }
+    return newSelectedCountry;
+  };
+
+  // Hooks for updated props
+  updateCountry = (country) => {
+    const newSelectedCountry = this.findCountryByCode(country);
     if (newSelectedCountry && newSelectedCountry.dialCode) {
       this.setState({
         selectedCountry: newSelectedCountry,
@@ -389,9 +408,6 @@ class PhoneInput extends React.Component {
       const dialCode =
         newSelectedCountry &&
         startsWith(inputNumber, prefix + newSelectedCountry.dialCode)
-          ? newSelectedCountry.dialCode
-          : !this.props.countryCodeEditable &&
-            !startsWith(inputNumber, prefix + newSelectedCountry.dialCode)
           ? newSelectedCountry.dialCode
           : "";
 
