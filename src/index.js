@@ -361,13 +361,13 @@ class PhoneInput extends React.Component {
         }
         if (newSelectedCountry && newSelectedCountry.dialCode) {
             this.setState({
-                selectedCountry: newSelectedCountry
-                // formattedNumber: this.props.disableCountryCode
-                //     ? ""
-                //     : this.formatNumber(
-                //           newSelectedCountry.dialCode,
-                //           newSelectedCountry
-                //       )
+                selectedCountry: newSelectedCountry,
+                formattedNumber: this.props.disableCountryCode
+                    ? ""
+                    : this.formatNumber(
+                          newSelectedCountry.dialCode,
+                          newSelectedCountry
+                      )
             });
         }
     };
@@ -752,24 +752,25 @@ class PhoneInput extends React.Component {
         );
         if (!newSelectedCountry) return;
 
-        // const unformattedNumber = this.state.formattedNumber.replace(' ', '').replace('(', '').replace(')', '').replace('-', '');
-        // const newNumber = unformattedNumber.length > 1 ? unformattedNumber.replace(currentSelectedCountry.dialCode, newSelectedCountry.dialCode) : newSelectedCountry.dialCode;
-        // const formattedNumber = this.formatNumber(newNumber, newSelectedCountry);
+        const unformattedNumber = this.state.formattedNumber.replace(' ', '').replace('(', '').replace(')', '').replace('-', '');
+        const newNumber = unformattedNumber.length > 1 ? unformattedNumber.replace(currentSelectedCountry.dialCode, newSelectedCountry.dialCode) : newSelectedCountry.dialCode;
+        const formattedNumber = this.formatNumber(newNumber, newSelectedCountry);
 
         this.setState(
             prevState => ({
                 showDropdown: false,
                 selectedCountry: newSelectedCountry,
-                freezeSelection: true
+                freezeSelection: true,
+                formattedNumber
             }),
             () => {
                 this.cursorToEnd();
                 if (this.props.onChange)
                     this.props.onChange(
-                        this.state.formattedNumber,
+                        formattedNumber,
                         this.getCountryData(),
                         e,
-                        this.state.formattedNumber
+                        formattedNumber
                     );
             }
         );
